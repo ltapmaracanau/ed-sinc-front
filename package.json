@@ -1,0 +1,44 @@
+{
+  "name": "ed-sinc-front",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "start": "yarn build && node server.cjs",
+    "deploy": "yarn build && yarn start"
+  },
+  "railway": {
+    "commands": {
+      "build": "yarn build",
+      "start": "yarn run"
+    }
+  },
+  "dependencies": {
+    "@emotion/react": "^11.11.0",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.13.7",
+    "@mui/material": "^5.13.1",
+    "axios": "^1.4.0",
+    "eslint-plugin-react": "^7.34.2",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "eslint-plugin-react-refresh": "^0.4.7",
+    "express": "^4.18.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.8.1",
+    "styled-components": "^5.3.10",
+    "vite": "^4.3.9"
+  },
+  "devDependencies": {
+    "@types/node": "^18.15.11",
+    "@types/react": "^18.0.27",
+    "@types/react-dom": "^18.0.10",
+    "@types/styled-components": "^5.1.26",
+    "@vitejs/plugin-react": "^3.1.0",
+    "depcheck": "^1.4.7",
+    "railway": "^2.0.17",
+    "typescript": "^4.9.3"
+  }
+}
