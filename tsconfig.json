@@ -23,7 +23,8 @@
   },
   "include": [
     "src",
-    "src/image.d.ts"
+    "src/image.d.ts",
+    "src/declarations.d.ts"
   ],
   "references": [
     {

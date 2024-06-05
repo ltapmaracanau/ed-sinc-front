@@ -35,3 +35,45 @@ export const GlobalStyle = createGlobalStyle`
         background-color: #fff;
     }
 `
+
+export const BackgroundPadrao = styled.div`
+  margin-bottom: 20px;
+
+  flex-grow: 1;
+
+  color: #756c08;
+  background-image: url(${Textura});
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+
+  @media (max-height: 880px) {
+    /* overflow-y: auto;
+        overflow-x: hidden; */
+  }
+
+  h1 {
+    font-size: 50px;
+  }
+`;
+
+export const FundoEscuro = styled.div`
+    height: 100%;
+    width: 100vw;
+
+    overflow: hidden;
+
+    background-color: rgba(0, 0, 0, 0.5); 
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 5;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+`;
