@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import Contato from './pages/Contato';
 import Sobre from './pages/Sobre';
 import ConsentimentoPagina from './components/ConsentimentoPagina';
+import UsuariosHome from './pages/Usuarios/UsuariosHome';
 
 const urlServidor = import.meta.env.VITE_REACT_APP_API_URL;
 localStorage.setItem('urlServidor', urlServidor as string);
@@ -20,6 +21,7 @@ const App = () => {
             <Route path='/' element={<Home />} />
             <Route path='/contato' element={<Contato />} />
             <Route path='/sobre' element={<Sobre />} />
+            <Route path='/usuarios' element={<UsuariosHome />} />
           </Routes>
         </BrowserRouter>
       </ThemeProvider>

@@ -77,7 +77,7 @@ function AppBarResponsivel() {
     }
   };
 
-  const logoutMenu = () => {
+  const logout = () => {
     localStorage.removeItem("token");
     navigate("/");
   };
@@ -113,151 +113,110 @@ function AppBarResponsivel() {
   }, [anchorElEntidades]);
 
   return (
-    <nav role="navigation">
-    <AppBar position="static" style={{ backgroundColor: '#45674C' }}>
-      <Container maxWidth="xl" sx={{ minHeight: 70,  marginTop: '5px'}}>
+    <AppBar position="static" sx={{ backgroundColor: '#45674C' }}>
+      <Container maxWidth="xl" sx={{ minHeight: 70, mt: 1 }}>
         <Toolbar disableGutters>
-          <img
-            style={{ maxWidth:70 ,cursor: "pointer", marginRight: 20 }}
+          <Box
+            component="img"
             src={edsinclogo}
+            alt="Logo"
+            sx={{
+              maxWidth: 70,
+              cursor: "pointer",
+              mr: 2
+            }}
             onClick={() => navigate("/")}
           />
-          {/* VERSÃO WEB */}
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            <MenuItem key={'contato'} onClick={() => {navigate("/contato");}}>
-              <Typography textAlign="center" sx={{ fontWeight: 'bold' }}>
-                Contato
-              </Typography>
-            </MenuItem>
-            <MenuItem key={'sobre'} onClick={() => {navigate("/sobre");}}>
-              <Typography textAlign="center" sx={{ fontWeight: 'bold' }}>
-                Sobre
-              </Typography>
-            </MenuItem>
+            {["Contato", "Sobre"].map((page) => (
+              <MenuItem key={page} onClick={() => navigate(`/${page.toLowerCase()}`)}>
+                <Typography
+                  textAlign="center"
+                  sx={{ fontWeight: 'bold', textTransform: 'uppercase', color: 'white' }}
+                >
+                  {page}
+                </Typography>
+              </MenuItem>
+            ))}
           </Box>
-
-          
-        {token!=null && token!=undefined?
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title={`${nome}`}>
-              <IconButton 
-                aria-label="conta do corrente usuário"
-                aria-controls="menu usuário"
-                aria-haspopup="true"
-                aria-expanded={Boolean(anchorElUser)}
-                onClick={handleOpenUserMenu} 
-                sx={{ p: 0 }}>
-                <Avatar alt={nome} src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
+          {token ? (
+            <Box sx={{ flexGrow: 0 }}>
+              <Tooltip title={nome}>
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar alt={nome} src="/static/images/avatar/2.jpg" />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{ mt: '45px' }}
+                anchorEl={anchorElUser}
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                keepMounted
+                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                <MenuItem onClick={handleClickAdministrativo}>
+                  <Briefcase />
+                  <Typography sx={{ ml: 2, mr: 'auto' }}>Administrativo</Typography>
+                  {openAdministrativo ? <CaretUp /> : <CaretDown />}
+                </MenuItem>
+                <Collapse in={openAdministrativo} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding>
+                    <ListItemButton sx={{ pl: 4 }} onClick={() => navigate("/usuarios")}>
+                      <Typography>Usuarios</Typography>
+                    </ListItemButton>
+                  </List>
+                </Collapse>
+                <MenuItem onClick={handleClickDadosCadastrais}>
+                  <AddressBook />
+                  <Typography sx={{ ml: 2, mr: 'auto' }}>Dados Cadastrais</Typography>
+                  {openDadosCadastrais ? <CaretUp /> : <CaretDown />}
+                </MenuItem>
+                <Collapse in={openDadosCadastrais} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding>
+                    <ListItemButton sx={{ pl: 4 }} onClick={() => navigate("/alterarsenha")}>
+                      <Typography>Senha</Typography>
+                    </ListItemButton>
+                    <ListItemButton sx={{ pl: 4 }} onClick={() => navigate("/alterardadospessoais")}>
+                      <Typography>Dados Pessoais</Typography>
+                    </ListItemButton>
+                  </List>
+                </Collapse>
+                <MenuItem onClick={logout}>
+                  <SignOut />
+                  <Typography sx={{ ml: 2 }}>Sair</Typography>
+                </MenuItem>
+              </Menu>
+            </Box>
+          ) : (
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: "white",
+                color: "#45674C",
+                width: "7.95rem",
+                height: "2.95rem",
+                fontSize: "1rem",
+                fontWeight: "600",
+                borderRadius: "0.375rem",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                boxShadow: "0 0 4px rgba(0, 0, 0, 0.4)",
+                '&:hover': {
+                  backgroundColor: "lightgrey"
+                }
               }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
+              onClick={handleShowLoginModal}
             >
-              { (
-                [
-                  <MenuItem key='administrativo' aria-label="Abrir opções administrativo" onClick={handleClickAdministrativo}>
-                    <Briefcase/>
-                    <Typography textAlign="center" style={{marginLeft:20, marginRight:'auto'}}>
-                      Administrativo
-                    </Typography>
-                    {openAdministrativo ? < CaretUp/> : <CaretDown/>}
-                  </MenuItem>,
-                  <Collapse in={openAdministrativo} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
-                      <ListItemButton sx={{ pl: 4 }}>
-                        <ListItemIcon>
-                        </ListItemIcon>
-                          <Typography onClick={() => { navigate("/usuarios");}} textAlign="center">
-                            Usuarios
-                          </Typography>
-                      </ListItemButton>
-                    </List>
-                  </Collapse>
-                ]
-              )}
-                
-                  <MenuItem key='dados' aria-label="Abrir opções dados" onClick={handleClickDadosCadastrais}>
-                    <AddressBook/>
-                    <Typography textAlign="center" style={{marginLeft:20, marginRight:'auto'}}>
-                      Dados Cadastrais
-                    </Typography>
-                    {openDadosCadastrais ? <CaretUp/> : <CaretDown/>}
-                  </MenuItem>
-                  <Collapse in={openDadosCadastrais} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
-                    <ListItemButton sx={{ pl: 4 }}>
-                      <ListItemIcon>
-                      </ListItemIcon>
-                      <Typography onClick={() => {navigate("/alterarsenha");}} textAlign="center">
-                        Senha
-                      </Typography>
-                    </ListItemButton>
-                    <ListItemButton sx={{ pl: 4 }}>
-                      <ListItemIcon>
-                      </ListItemIcon>
-                      <Typography onClick={() => {navigate("/alterardadospessoais");}} textAlign="center">
-                        Dados Pessoais
-                      </Typography>
-                    </ListItemButton>
-                    </List>
-                  </Collapse>
-                
-
-                  <MenuItem key='sair' aria-label="Sair do sistema" onClick={logoutMenu}>
-                    <SignOut/>
-                    <Typography textAlign="center" style={{marginLeft:20}}>
-                      Sair
-                    </Typography>
-                  </MenuItem>
-
-            </Menu>
-          </Box>
-          : 
-          <Button
-            variant="contained"
-            style={{
-              backgroundColor: "white",
-              color: "#45674C",
-              width: "7.95rem",
-              height: "2.95rem",
-              fontSize: "1rem",
-              fontVariant: "h5", 
-              fontWeight: "600",
-              borderRadius: "0.375rem",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              boxShadow: "0 0 4px rgba(0, 0, 0, 0.4)",
-            }}
-            onClick={() => {
-              setShowLoginModal(!showLoginModal);
-            }}
-          >
-            Entrar
-          </Button>
-          }
-
+              Entrar
+            </Button>
+          )}
         </Toolbar>
-
-        {showLoginModal ? (<IniciarSessao handleMostrarIniciarSessao={handleShowLoginModal} />) : null}
-
+        {showLoginModal && <IniciarSessao handleMostrarIniciarSessao={handleShowLoginModal} />}
       </Container>
     </AppBar>
-    </nav>
   );
-}
+};
 
 export default AppBarResponsivel;
