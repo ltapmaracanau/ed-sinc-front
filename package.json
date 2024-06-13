@@ -30,8 +30,10 @@
     "jwt-decode": "^3.1.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-input-mask": "^2.0.4",
     "react-loader-spinner": "^6.1.6",
     "react-router-dom": "^6.8.1",
+    "react-toastify": "^10.0.5",
     "styled-components": "^5.3.10",
     "vite": "^4.3.9"
   },
@@ -40,6 +42,7 @@
     "@types/node": "^18.15.11",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
+    "@types/react-input-mask": "^3.0.5",
     "@types/styled-components": "^5.1.26",
     "@vitejs/plugin-react": "^3.1.0",
     "depcheck": "^1.4.7",
