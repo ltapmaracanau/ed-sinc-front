@@ -13,9 +13,14 @@ import {
 import { XCircle, Eye, EyeSlash, Lock } from '@phosphor-icons/react';
 import CategoriaSelect from './Listas/CategoriaSelect';
 import StatusSelect from './Listas/StatusSelect';
+import RacaSelect from './Listas/RacaSelect';
 import ExportadoSelect from './Listas/ExportadoSelect';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import GruposSociaisSelect from '../GruposSociais/GruposSociaisSelect';
+import PolosSelect from '../Polos/PolosSelect';
+import PessoaComDeficienciaSelect from '../PessoaComDeficiencia/PessoaComDeficienciaSelect';
+import PessoaNeurodivergenteSelect from '../PessoaNeurodivergente/PessoaNeurodivergenteSelect';
 
 interface AdicionarUsuarioModalProps {
   open: boolean;
@@ -48,7 +53,12 @@ const AdicionarUsuarioModal: React.FC<AdicionarUsuarioModalProps> = ({ open, onC
     confirmarSenha: ''
   });
   const [selectedCategorias, setSelectedCategorias] = useState<string[]>([]);
+  const [selectedGruposSociais, setSelectedGruposSociais] = useState<string[]>([]);
+  const [selectedPessoaComDeficiencia, setSelectedPessoaComDeficiencia] = useState<string[]>([]);
+  const [selectedPessoaNeurodivergente, setSelectedPessoaNeurodivergente] = useState<string[]>([]);
+  const [selectedPolos, setSelectedPolos] = useState<string[]>([]);
   const [status, setStatus] = useState('');
+  const [raca, setRaca] = useState('');
   const [exportado, setExportado] = useState('');
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const [mostrarConfirmarSenha, setMostrarConfirmarSenha] = useState(false);
@@ -69,16 +79,26 @@ const AdicionarUsuarioModal: React.FC<AdicionarUsuarioModalProps> = ({ open, onC
     const telefoneSemMascara = telefone.replace(/[()\s-]/g, '');
     const cpfSemMascara = cpf.replace(/[.\-]/g, '');
 
+    const gruposSociais = selectedGruposSociais.map(id => ({ id: parseInt(id) }));
+    const polos = selectedPolos.map(id => ({ id: parseInt(id) }));
+    const pessoasNeurodivergente = selectedPessoaNeurodivergente.map(id => ({ id: parseInt(id) }));
+    const pessoasComDeficiencia = selectedPessoaComDeficiencia.map(id => ({ id: parseInt(id) }));
+
     const novoUsuario = {
       nome,
       email,
+      raca,
       telefone: telefoneSemMascara,
       cpf: cpfSemMascara,
       dataNascimento,
       senhaEConfirmarSenha,
       categorias: selectedCategorias,
       status,
-      exportado: exportado === "Sim"
+      exportado: exportado === "Sim",
+      gruposSociais,
+      polos,
+      pessoasNeurodivergente,
+      pessoasComDeficiencia
     };
 
     try {
@@ -139,8 +159,28 @@ const AdicionarUsuarioModal: React.FC<AdicionarUsuarioModalProps> = ({ open, onC
     setSelectedCategorias(value);
   };
 
+  const handleGruposSociaisChange = (value: string[]) => {
+    setSelectedGruposSociais(value);
+  };
+
+  const handlePolosChange = (value: string[]) => {
+    setSelectedPolos(value);
+  };
+
+  const handlePessoaNeurodivergenteChange = (value: string[]) => {
+    setSelectedPessoaNeurodivergente(value);
+  };
+
+  const handlePessoaComDeficienciaChange = (value: string[]) => {
+    setSelectedPessoaComDeficiencia(value);
+  };
+
   const handleStatusChange = (value: string) => {
     setStatus(value);
+  };
+
+  const handleRacaChange = (value: string) => {
+    setRaca(value);
   };
 
   const handleExportadoChange = (value: string) => {
@@ -190,7 +230,12 @@ const AdicionarUsuarioModal: React.FC<AdicionarUsuarioModalProps> = ({ open, onC
         confirmarSenha: ''
       });
       setSelectedCategorias([]);
+      setSelectedGruposSociais([]);
+      setSelectedPessoaComDeficiencia([]);
+      setSelectedPessoaNeurodivergente([]);
+      setSelectedPolos([]);
       setStatus('');
+      setRaca('');
       setExportado('');
       setMostrarSenha(false);
       setMostrarConfirmarSenha(false);
@@ -198,8 +243,6 @@ const AdicionarUsuarioModal: React.FC<AdicionarUsuarioModalProps> = ({ open, onC
   }, [open]);
 
   return (
-    
-    
     <Modal open={open} onClose={onClose}>
       <>
       <ToastContainer />
@@ -248,7 +291,7 @@ const AdicionarUsuarioModal: React.FC<AdicionarUsuarioModalProps> = ({ open, onC
               }}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={6}>
             <TextField
               fullWidth
               margin="normal"
@@ -333,12 +376,42 @@ const AdicionarUsuarioModal: React.FC<AdicionarUsuarioModalProps> = ({ open, onC
             />
           </Grid>
           <Grid item xs={6}>
+            <RacaSelect
+              value={raca}
+              onChange={handleRacaChange}
+            />
+          </Grid>
+          <Grid item xs={6}>
             <CategoriaSelect
               value={selectedCategorias}
               onChange={handleCategoriaChange}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={6}>
+            <GruposSociaisSelect
+              value={selectedGruposSociais}
+              onChange={handleGruposSociaisChange}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <PolosSelect
+              value={selectedPolos}
+              onChange={handlePolosChange}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <PessoaComDeficienciaSelect
+              value={selectedPessoaComDeficiencia}
+              onChange={handlePessoaComDeficienciaChange}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <PessoaNeurodivergenteSelect
+              value={selectedPessoaNeurodivergente}
+              onChange={handlePessoaNeurodivergenteChange}
+            />
+          </Grid>
+          <Grid item xs={6}>
             <TextField
               fullWidth
               placeholder="Senha"
@@ -373,7 +446,7 @@ const AdicionarUsuarioModal: React.FC<AdicionarUsuarioModalProps> = ({ open, onC
               style={{ marginTop: "1rem" }}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={6}>
             <TextField
               fullWidth
               placeholder="Confirmar Senha"
@@ -405,7 +478,7 @@ const AdicionarUsuarioModal: React.FC<AdicionarUsuarioModalProps> = ({ open, onC
                   </InputAdornment>
                 ),
               }}
-              style={{ marginTop: "1.5rem" }}
+              style={{ marginTop: "1rem" }}
             />
           </Grid>
         </Grid>
@@ -421,4 +494,3 @@ const AdicionarUsuarioModal: React.FC<AdicionarUsuarioModalProps> = ({ open, onC
 };
 
 export default AdicionarUsuarioModal;
-

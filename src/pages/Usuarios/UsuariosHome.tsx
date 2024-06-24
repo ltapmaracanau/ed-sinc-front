@@ -12,9 +12,6 @@ import {
   TableHead,
   TableRow,
   TablePagination,
-  Toolbar,
-  Typography,
-  Checkbox,
   IconButton,
   Tooltip,
   TextField,
@@ -27,8 +24,6 @@ import {
   Button,
 } from '@mui/material';
 import { SelectChangeEvent } from '@mui/material/Select';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { alpha } from '@mui/material/styles';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import RestoreIcon from '@mui/icons-material/Restore';
 import BlockIcon from '@mui/icons-material/Block';
@@ -44,53 +39,23 @@ export interface UsuarioInterface {
   cpf: string;
   categorias: string[];
   status: string;
-  dataNascimento: number[]; // Alterado para refletir o array retornado pela API
+  dataNascimento: number[];
   exportado: boolean;
+  raca: string;
+  gruposSociais: any[];
+  pessoasComDeficiencia: any[];
+  pessoasNeurodivergente: any[];
+  polos: any[];
 }
 
-
 const headCells = [
-  { id: 'email', numeric: false, disablePadding: true, label: 'Email' },
+  { id: 'email', numeric: false, disablePadding: false, label: 'Email' },
   { id: 'nome', numeric: false, disablePadding: false, label: 'Nome' },
   { id: 'categorias', numeric: false, disablePadding: false, label: 'Categorias' },
   { id: 'status', numeric: false, disablePadding: false, label: 'Status' },
   { id: 'exportado', numeric: false, disablePadding: false, label: 'Exportado' },
   { id: 'acoes', numeric: false, disablePadding: false, label: 'Ações' },
 ];
-
-interface EnhancedTableToolbarProps {
-  numSelected: number;
-}
-
-function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-  const { numSelected } = props;
-  return (
-    <Toolbar sx={{
-      pl: { sm: 2 },
-      pr: { xs: 1, sm: 1 },
-      ...(numSelected > 0 && {
-        bgcolor: (theme) => alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
-      }),
-    }}>
-      {numSelected > 0 ? (
-        <Typography sx={{ flex: '1 1 100%' }} color="inherit" variant="subtitle1" component="div">
-          {numSelected} selecionado(s)
-        </Typography>
-      ) : (
-        <Typography sx={{ flex: '1 1 100%' }} variant="h6" id="tableTitle" component="div">
-          Usuários
-        </Typography>
-      )}
-      {numSelected > 0 ? (
-        <Tooltip title="Excluir">
-          <IconButton>
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      ) : null}
-    </Toolbar>
-  );
-}
 
 function UsuariosHome() {
   const [usuarios, setUsuarios] = useState<UsuarioInterface[]>([]);
@@ -249,37 +214,7 @@ function UsuariosHome() {
     setModalEditarOpen(true);
   };
 
-  const [dense, setDense] = useState<boolean>(true); // Definido como true por padrão
-  const [selected, setSelected] = useState<readonly number[]>([]);
-
-  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.checked) {
-      const newSelected = usuarios.map((n) => n.id);
-      setSelected(newSelected);
-      return;
-    }
-    setSelected([]);
-  };
-
-  const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
-    const selectedIndex = selected.indexOf(id);
-    let newSelected: readonly number[] = [];
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
-    }
-    setSelected(newSelected);
-  };
-
-  const isSelected = (id: number) => selected.indexOf(id) !== -1;
+  const [dense, setDense] = useState<boolean>(true);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -329,7 +264,6 @@ function UsuariosHome() {
       <AppBarResponsivel />
       {!loadingHome ? (
         <Paper sx={{ width: '100%', mb: 2 }}>
-          <EnhancedTableToolbar numSelected={selected.length} />
           <Box sx={{ p: 2 }}>
             <Grid container spacing={2}>
               <Grid item xs={6}>
@@ -405,15 +339,6 @@ function UsuariosHome() {
             <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'}>
               <TableHead>
                 <TableRow>
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      color="primary"
-                      indeterminate={selected.length > 0 && selected.length < usuarios.length}
-                      checked={usuarios.length > 0 && selected.length === usuarios.length}
-                      onChange={handleSelectAllClick}
-                      inputProps={{ 'aria-label': 'select all users' }}
-                    />
-                  </TableCell>
                   {headCells.map((headCell) => (
                     <TableCell
                       key={headCell.id}
@@ -426,78 +351,64 @@ function UsuariosHome() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {usuarios.map((usuario, index) => {
-                  const isItemSelected = isSelected(usuario.id);
-                  const labelId = `enhanced-table-checkbox-${index}`;
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(event) => handleClick(event, usuario.id)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={usuario.id}
-                      selected={isItemSelected}
-                      sx={{ cursor: 'pointer' }}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          checked={isItemSelected}
-                          inputProps={{ 'aria-labelledby': labelId }}
-                        />
-                      </TableCell>
-                      <TableCell component="th" id={labelId} scope="row" padding="none">
-                        {usuario.email}
-                      </TableCell>
-                      <TableCell>{usuario.nome}</TableCell>
-                      <TableCell>{usuario.categorias.join(', ')}</TableCell>
-                      <TableCell>
-                        <Chip
-                          label={getStatusLabel(usuario.status)}
-                          color={getStatusColor(usuario.status)}
-                          sx={{ borderColor: 'green', borderWidth: '1px', borderStyle: 'solid', color: 'green' }}
-                          variant="outlined"
-                        />
-                      </TableCell>
-                      <TableCell>{usuario.exportado ? 'Sim' : 'Não'}</TableCell>
-                      <TableCell>
-                        <Tooltip title="Bloquear">
-                          <IconButton
-                            onClick={() => bloquearUsuario(usuario.id)}
-                            sx={{ color: '#FFC107', border: '1px solid #FFC107', borderRadius: '50%', marginRight: '8px' }}
-                          >
-                            <BlockIcon />
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Arquivar">
-                          <IconButton
-                            onClick={() => arquivarUsuario(usuario.id)}
-                            sx={{ color: '#F44336', border: '1px solid #F44336', borderRadius: '50%', marginRight: '8px' }}
-                          >
-                            <ArchiveIcon />
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Restaurar">
-                          <IconButton
-                            onClick={() => restaurarUsuario(usuario.id)}
-                            sx={{ color: 'green', border: '1px solid green', borderRadius: '50%', marginRight: '8px' }}
-                          >
-                            <RestoreIcon />
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Editar">
-                          <IconButton
-                            onClick={() => handleEditClick(usuario)}
-                            sx={{ color: '#2196F3', border: '1px solid #2196F3', borderRadius: '50%', marginRight: '8px' }}
-                          >
-                            <EditIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
+                {usuarios.map((usuario, index) => (
+                  <TableRow
+                    hover
+                    role="checkbox"
+                    tabIndex={-1}
+                    key={usuario.id}
+                    sx={{ cursor: 'default' }}
+                  >
+                    <TableCell>
+                      {usuario.email}
+                    </TableCell>
+                    <TableCell>{usuario.nome}</TableCell>
+                    <TableCell>{usuario.categorias.join(', ')}</TableCell>
+                    <TableCell>
+                      <Chip
+                        label={getStatusLabel(usuario.status)}
+                        color={getStatusColor(usuario.status)}
+                        sx={{ borderColor: 'green', borderWidth: '1px', borderStyle: 'solid', color: 'green' }}
+                        variant="outlined"
+                      />
+                    </TableCell>
+                    <TableCell>{usuario.exportado ? 'Sim' : 'Não'}</TableCell>
+                    <TableCell>
+                      <Tooltip title="Bloquear">
+                        <IconButton
+                          onClick={() => bloquearUsuario(usuario.id)}
+                          sx={{ color: '#FFC107', border: '1px solid #FFC107', borderRadius: '50%', marginRight: '8px' }}
+                        >
+                          <BlockIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Arquivar">
+                        <IconButton
+                          onClick={() => arquivarUsuario(usuario.id)}
+                          sx={{ color: '#F44336', border: '1px solid #F44336', borderRadius: '50%', marginRight: '8px' }}
+                        >
+                          <ArchiveIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Restaurar">
+                        <IconButton
+                          onClick={() => restaurarUsuario(usuario.id)}
+                          sx={{ color: 'green', border: '1px solid green', borderRadius: '50%', marginRight: '8px' }}
+                        >
+                          <RestoreIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Editar">
+                        <IconButton
+                          onClick={() => handleEditClick(usuario)}
+                          sx={{ color: '#2196F3', border: '1px solid #2196F3', borderRadius: '50%', marginRight: '8px' }}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </TableContainer>
@@ -512,9 +423,7 @@ function UsuariosHome() {
               onRowsPerPageChange={handleChangeRowsPerPage}
             />
           </Box>
-
         </Paper> 
-
       ) : (
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
           <ColorRing
@@ -523,25 +432,16 @@ function UsuariosHome() {
             width={80}
             ariaLabel="blocks-loading"
             wrapperClass="blocks-wrapper"
-            colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
+            colors={['green', 'gray', 'green', 'black', 'green']}
           />
         </Box>
       )}
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2, mr: 1 }}>
         <Button
           variant="contained"
-          sx={{ backgroundColor: '#45674C', color: 'white', mr: 1, fontWeight: 'bold'}}
-          onClick={() => {
-                      // Adicione a lógica do relatório aqui
-          }}
-          >
-          Relatório
-        </Button>
-        <Button
-          variant="contained"
           sx={{ backgroundColor: '#45674C', color: 'white', fontWeight: 'bold' }}
           onClick={handleOpenModal}
-          >
+        >
           Adicionar
         </Button>
       </Box>

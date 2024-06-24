@@ -165,6 +165,22 @@ function AppBarResponsivel() {
                     <ListItemButton sx={{ pl: 4 }} onClick={() => navigate("/usuarios")}>
                       <Typography>Usuarios</Typography>
                     </ListItemButton>
+
+                    <ListItemButton sx={{ pl: 4 }} onClick={() => navigate("/pessoaneurodivergente")}>
+                      <Typography>Pessoa Neurodivergente</Typography>
+                    </ListItemButton>
+
+                    <ListItemButton sx={{ pl: 4 }} onClick={() => navigate("/pcd")}>
+                      <Typography>Pessoa Com Deficiência</Typography>
+                    </ListItemButton>
+
+                    <ListItemButton sx={{ pl: 4 }} onClick={() => navigate("/grupossociais")}>
+                      <Typography>Grupos Sociais</Typography>
+                    </ListItemButton>
+                    
+                    <ListItemButton sx={{ pl: 4 }} onClick={() => navigate("/polos")}>
+                      <Typography>Polos</Typography>
+                    </ListItemButton>
                   </List>
                 </Collapse>
                 <MenuItem onClick={handleClickDadosCadastrais}>
